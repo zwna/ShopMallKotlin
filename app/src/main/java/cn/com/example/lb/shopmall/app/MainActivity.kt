@@ -1,37 +1,59 @@
-package cn.com.example.lb.shopmall
+package cn.com.example.lb.shopmall.app
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.internal.BottomNavigationItemView
 import android.support.design.internal.BottomNavigationMenuView
 import android.support.design.widget.BottomNavigationView
 import android.annotation.SuppressLint
 import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentActivity
 import android.support.v4.app.FragmentPagerAdapter
 import android.util.Log
+import android.view.ViewGroup
 import butterknife.ButterKnife
+import cn.com.example.lb.shopmall.R
+import cn.com.example.lb.shopmall.community.fragment.CommunityFragment
+import cn.com.example.lb.shopmall.home.fragment.HomeFragment
+import cn.com.example.lb.shopmall.shoppingcart.fragment.ShoppingCartFragment
+import cn.com.example.lb.shopmall.type.fragment.TypeFragment
+import cn.com.example.lb.shopmall.user.fragment.UserFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : FragmentActivity() {
+
+    private lateinit var homeFragment: HomeFragment
+    private lateinit var communityFragment: CommunityFragment
+    private lateinit var shoppingCartFragment: ShoppingCartFragment
+    private lateinit var typeFragment: TypeFragment
+    private lateinit var userFragment: UserFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         ButterKnife.bind(this)
         disableShiftMode(bottomNavigationView)
+        homeFragment = HomeFragment()
+        communityFragment = CommunityFragment()
+        shoppingCartFragment = ShoppingCartFragment()
+        typeFragment = TypeFragment()
+        userFragment = UserFragment()
         main_viewPager.offscreenPageLimit = 5
         main_viewPager.adapter = object : FragmentPagerAdapter(supportFragmentManager){
             override fun getItem(position: Int) = when(position){
-                    0 -> Fragment()
-                    1 -> Fragment()
-                    2 -> Fragment()
-                    3 -> Fragment()
-                    4 -> Fragment()
+                    0 -> homeFragment
+                    1 -> communityFragment
+                    2 -> shoppingCartFragment
+                    3 -> typeFragment
+                    4 -> userFragment
                     else -> null
                 }
 
             override fun getCount() = 5
+
+            override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
+//                super.destroyItem(container, position, `object`)
+            }
 
         }
     }
