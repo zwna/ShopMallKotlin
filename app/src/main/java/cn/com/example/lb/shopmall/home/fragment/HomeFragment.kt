@@ -7,10 +7,16 @@ import butterknife.Unbinder
 import cn.com.example.lb.shopmall.R
 import cn.com.example.lb.shopmall.app.ShopMallApplication
 import cn.com.example.lb.shopmall.base.BaseFragment
-import cn.com.example.lb.shopmall.base.DaggerApplicationComponent
+import cn.com.example.lb.shopmall.home.api.HomeApi
+import cn.com.example.lb.shopmall.home.bean.HomeDataBean
+import cn.com.example.lb.shopmall.home.dagger2.DaggerHomeComponent
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.titlebar.*
 import retrofit2.Retrofit
+import java.util.function.Consumer
 import javax.inject.Inject
 
 class HomeFragment:BaseFragment() {
@@ -22,17 +28,19 @@ class HomeFragment:BaseFragment() {
     @Inject
     lateinit var retrofit:Retrofit
 
+    @Inject
+    lateinit var homeApi:HomeApi
+
+    @Inject
+    lateinit var observable: Observable<HomeDataBean>
+
+
     override fun initView(): View? {
         homeView = View.inflate(activity, R.layout.fragment_home,null)
         unbinder = ButterKnife.bind(this, homeView!!)
         return homeView
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        initListener()
-        DaggerApplicationComponent.create().inject(this)
-    }
 
     private fun initListener(){
         ib_top.setOnClickListener{
@@ -50,7 +58,24 @@ class HomeFragment:BaseFragment() {
     }
 
     override fun initData() {
+        initListener()
+        DaggerHomeComponent.builder().baseApplicationComponent((activity?.application as ShopMallApplication).baseApplicationComponent).build().inject(this)
+        observable.compose(bindToLifecycle())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    t:HomeDataBean? ->
+                    addDataToView(t)
+                    println(t)
+                },{t: Throwable? ->  println("throwable == ${t.toString()}")})
+    }
 
+    private fun addDataToView(homeDataBean: HomeDataBean?){
+        if(homeDataBean != null){
+            //有数据
+        }else{
+            //无数据
+        }
     }
 
     override fun onDestroyView() {
