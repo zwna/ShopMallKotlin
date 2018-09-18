@@ -1,12 +1,16 @@
 package cn.com.example.lb.shopmall.home.fragment
 
+import android.content.Context
 import android.os.Bundle
+import android.support.v7.widget.GridLayoutManager
+import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import butterknife.ButterKnife
 import butterknife.Unbinder
 import cn.com.example.lb.shopmall.R
 import cn.com.example.lb.shopmall.app.ShopMallApplication
 import cn.com.example.lb.shopmall.base.BaseFragment
+import cn.com.example.lb.shopmall.home.adapter.HomeFragmentAdapter
 import cn.com.example.lb.shopmall.home.api.HomeApi
 import cn.com.example.lb.shopmall.home.bean.HomeDataBean
 import cn.com.example.lb.shopmall.home.dagger2.DaggerHomeComponent
@@ -16,7 +20,6 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.titlebar.*
 import retrofit2.Retrofit
-import java.util.function.Consumer
 import javax.inject.Inject
 
 class HomeFragment:BaseFragment() {
@@ -33,6 +36,8 @@ class HomeFragment:BaseFragment() {
 
     @Inject
     lateinit var observable: Observable<HomeDataBean>
+
+    private lateinit var homeFragmentAdapter:HomeFragmentAdapter
 
 
     override fun initView(): View? {
@@ -73,6 +78,9 @@ class HomeFragment:BaseFragment() {
     private fun addDataToView(homeDataBean: HomeDataBean?){
         if(homeDataBean != null){
             //有数据
+            homeFragmentAdapter = HomeFragmentAdapter(activity as Context,homeDataBean.result)
+            rv_home.layoutManager = GridLayoutManager(activity,1)
+            rv_home.adapter = homeFragmentAdapter
         }else{
             //无数据
         }
