@@ -8,6 +8,7 @@ import android.annotation.SuppressLint
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
 import android.support.v4.app.FragmentPagerAdapter
+import android.support.v4.view.ViewPager
 import android.util.Log
 import android.view.ViewGroup
 import butterknife.ButterKnife
@@ -55,6 +56,33 @@ class MainActivity : FragmentActivity() {
 //                super.destroyItem(container, position, `object`)
             }
 
+        }
+        main_viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener{
+            override fun onPageScrollStateChanged(state: Int) {
+
+            }
+
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+
+            }
+
+            override fun onPageSelected(position: Int) {
+                bottomNavigationView.menu.getItem(position).isChecked = true
+            }
+
+        })
+
+        bottomNavigationView.setOnNavigationItemSelectedListener {
+            item ->
+                when (item.itemId) {
+                    R.id.home_page -> main_viewPager.currentItem = 0
+                    R.id.kind -> main_viewPager.currentItem = 1
+                    R.id.find -> main_viewPager.currentItem = 2
+                    R.id.buy_car -> main_viewPager.currentItem = 3
+                    R.id.user_center -> main_viewPager.currentItem = 4
+                    else ->main_viewPager.currentItem = 0
+                }
+            true
         }
     }
 

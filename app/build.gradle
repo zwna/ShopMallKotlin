@@ -62,4 +62,5 @@ dependencies {
     implementation 'com.xhb:xbanner:1.4.1'//将latestVersion替换成上面最新的版本号
     implementation 'com.github.bumptech.glide:glide:4.8.0'
     kapt 'com.github.bumptech.glide:compiler:4.8.0'
+    implementation 'com.zhy:magic-viewpager:1.0.1'
 }
