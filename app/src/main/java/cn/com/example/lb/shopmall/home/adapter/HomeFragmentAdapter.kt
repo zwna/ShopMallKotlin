@@ -2,6 +2,8 @@ package cn.com.example.lb.shopmall.home.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
+import android.nfc.Tag
 import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
 import android.support.v7.widget.LinearLayoutManager
@@ -10,13 +12,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewParent
-import android.widget.GridView
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import butterknife.BindView
 import butterknife.ButterKnife
 import cn.com.example.lb.shopmall.R
+import cn.com.example.lb.shopmall.app.GoodsInfoActivity
 import cn.com.example.lb.shopmall.app.ShopMallApplication
 import cn.com.example.lb.shopmall.home.bean.*
 import cn.com.example.lb.shopmall.home.dagger2.*
@@ -31,6 +31,8 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.fragment_home.*
+import java.io.Serializable
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -38,6 +40,7 @@ import java.util.function.Consumer
 import javax.inject.Inject
 
 class HomeFragmentAdapter(val context:Context,val resultBean: Result):RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
 
     @SuppressLint("InflateParams")
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -47,13 +50,13 @@ class HomeFragmentAdapter(val context:Context,val resultBean: Result):RecyclerVi
             ACT -> ActViewHolder(context,layoutInflater.inflate(R.layout.act_item,null),resultBean.act_info)
             COUNTDOWN -> CountDownViewHolder(context,layoutInflater.inflate(R.layout.seckill_item,null),resultBean.seckill_info)
             RECOMMEND -> RecommendViewHolder(context,layoutInflater.inflate(R.layout.recommend_item,null),resultBean.recommend_info)
-            HOT -> HotViewHolder(context,layoutInflater.inflate(R.layout.recommend_item,null),resultBean.hot_info)
+            HOT -> HotViewHolder(context,layoutInflater.inflate(R.layout.hot_item,null),resultBean.hot_info)
             else -> BannerViewHolder(context,layoutInflater.inflate(R.layout.banner_viewpager,null))
         }
     }
 
     override fun getItemCount(): Int {
-        return 5
+        return 6
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -120,12 +123,20 @@ class HomeFragmentAdapter(val context:Context,val resultBean: Result):RecyclerVi
          * 热卖
          */
         const val HOT:Int = 5
+
+        const val TAG:String = "HomeFragmentAdapter"
     }
 
     /**
      * 相差多少时间 单位毫秒
      */
     private var dt:Long = 0L
+
+    fun startGoodsInfoActivity(goodsBean: GoodsBean){
+        val intent = Intent(context,GoodsInfoActivity::class.java)
+        intent.putExtra(TAG,goodsBean)
+        context.startActivity(intent)
+    }
 
 
     override fun getItemViewType(position: Int): Int {
@@ -161,7 +172,6 @@ class HomeFragmentAdapter(val context:Context,val resultBean: Result):RecyclerVi
             }
             banner.setOnItemClickListener{
                 banner, model, view, position ->
-                Toast.makeText(context,"position == $position",Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -240,7 +250,9 @@ class HomeFragmentAdapter(val context:Context,val resultBean: Result):RecyclerVi
             rv_seckill.adapter = countDownRecyclerViewAdapter
             countDownRecyclerViewAdapter.onCountDownRecycleView = object : CountDownRecyclerViewAdapter.OnCountDownRecycleView{
                 override fun onItemClick(position: Int) {
-                    Toast.makeText(context,"$position",Toast.LENGTH_SHORT).show()
+                    val list = seckillInfo.list
+                    val x = list[position]
+                    startGoodsInfoActivity(GoodsBean(x.cover_price,x.figure,x.name,x.product_id))
                 }
             }
             dt = seckillInfo.end_time.toLong() - seckillInfo.start_time.toLong()
@@ -268,6 +280,11 @@ class HomeFragmentAdapter(val context:Context,val resultBean: Result):RecyclerVi
             ButterKnife.bind(this@RecommendViewHolder,itemView)
             val recommendModule = RecommendModule(context, recommendInfoList)
             DaggerRecommendComponent.builder().recommendModule(recommendModule).build().inject(this@RecommendViewHolder)
+            gv_recommend.setOnItemClickListener{
+                adapterView: AdapterView<*>?, view: View?, i: Int, l: Long ->
+                val recommendInfo = recommendInfoList[i]
+                startGoodsInfoActivity(GoodsBean(recommendInfo.cover_price,recommendInfo.figure,recommendInfo.name,recommendInfo.product_id))
+            }
         }
 
         fun setData(){
@@ -277,13 +294,28 @@ class HomeFragmentAdapter(val context:Context,val resultBean: Result):RecyclerVi
 
     inner class HotViewHolder(val context: Context,hotView:View,hotInfoList:List<HotInfo>):RecyclerView.ViewHolder(hotView){
 
+        @BindView(R.id.tv_more_hot)
+        lateinit var tv_more_hot:TextView
+
+        @BindView(R.id.gv_hot)
+        lateinit var gv_hot:GridView
+
+        @Inject
+        lateinit var adapter: HotGridViewAdapter
 
         init {
             ButterKnife.bind(this@HotViewHolder,hotView)
+            val hotModule = HotModule(context,hotInfoList)
+            DaggerHotComponent.builder().hotModule(hotModule).build().inject(this@HotViewHolder)
+            gv_hot.setOnItemClickListener{
+                adapterView: AdapterView<*>?, view: View?, i: Int, l: Long ->
+                val hotInfo = hotInfoList[i]
+                startGoodsInfoActivity(GoodsBean(hotInfo.cover_price,hotInfo.figure,hotInfo.name,hotInfo.product_id))
+            }
         }
 
         fun setData(){
-
+             gv_hot.adapter = adapter
         }
     }
 }

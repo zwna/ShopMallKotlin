@@ -1,1 +1,3 @@
-# -kotlin-
+1.将TomCat服务器.7z解压后放到指定文件夹
+2.将atguigu.zip文件解压后放在tomcat的webapps\ROOT目录下
+3.点击tomcat的bin目录下的startup.bat启动tomcat即可

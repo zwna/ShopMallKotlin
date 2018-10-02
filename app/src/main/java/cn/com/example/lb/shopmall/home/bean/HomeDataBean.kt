@@ -1,5 +1,7 @@
 package cn.com.example.lb.shopmall.home.bean
 
+import java.io.Serializable
+
 
 data class HomeDataBean(
     val code: Int,
@@ -35,7 +37,7 @@ data class RecommendInfo(
     val product_id: String
 
 
-) {
+):Serializable {
     override fun toString(): String {
         return "RecommendInfo(cover_price='$cover_price', figure='$figure', name='$name', product_id='$product_id')"
     }
@@ -83,7 +85,7 @@ data class SeckillInfo(
     val start_time: String
 
 
-) {
+):Serializable {
     override fun toString(): String {
         return "SeckillInfo(end_time='$end_time', list=$list, start_time='$start_time')"
     }
@@ -110,7 +112,7 @@ data class BannerInfo(
     val value: Value
 
 
-) {
+):Serializable {
     override fun toString(): String {
         return "BannerInfo(image='$image', option=$option, type=$type, value=$value)"
     }
@@ -133,7 +135,7 @@ data class HotInfo(
     val product_id: String
 
 
-) {
+):Serializable {
     override fun toString(): String {
         return "HotInfo(cover_price='$cover_price', figure='$figure', name='$name', product_id='$product_id')"
     }

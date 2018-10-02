@@ -1,0 +1,7 @@
+#Internal package file, do not edit.
+#Tue Oct 02 15:57:15 CST 2018
+0.baseType=DIRECTORY
+0.base=C\:\\Users\\Administrator\\Desktop\\ShopMall\\tBViewer\\build\\intermediates\\transforms\\dexMerger\\debug\\0
+0.path=classes.dex
+0.set=DEX
+count=1

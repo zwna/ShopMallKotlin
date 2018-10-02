@@ -1,0 +1,4 @@
+#Tue Oct 02 15:57:15 CST 2018
+base.0=C\:\\Users\\Administrator\\Desktop\\ShopMall\\tBViewer\\build\\intermediates\\transforms\\dexMerger\\debug\\0
+path.0=classes.dex
+renamed.0=classes.dex

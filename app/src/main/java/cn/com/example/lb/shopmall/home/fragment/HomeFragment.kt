@@ -1,5 +1,6 @@
 package cn.com.example.lb.shopmall.home.fragment
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.support.v7.widget.GridLayoutManager
@@ -62,6 +63,7 @@ class HomeFragment:BaseFragment() {
         }
     }
 
+    @SuppressLint("CheckResult")
     override fun initData() {
         initListener()
         DaggerHomeComponent.builder().baseApplicationComponent((activity?.application as ShopMallApplication).baseApplicationComponent).build().inject(this)
@@ -79,7 +81,19 @@ class HomeFragment:BaseFragment() {
         if(homeDataBean != null){
             //有数据
             homeFragmentAdapter = HomeFragmentAdapter(activity as Context,homeDataBean.result)
-            rv_home.layoutManager = GridLayoutManager(activity,1)
+            val gridLayoutManager = GridLayoutManager(activity,1)
+            gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup(){
+                override fun getSpanSize(position: Int): Int {
+                    if(position <= 3){
+                       ib_top.visibility = View.GONE
+                    }else{
+                        ib_top.visibility = View.VISIBLE
+                    }
+                    return 1
+                }
+
+            }
+            rv_home.layoutManager = gridLayoutManager
             rv_home.adapter = homeFragmentAdapter
         }else{
             //无数据
