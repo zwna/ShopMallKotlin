@@ -5,6 +5,7 @@ import butterknife.ButterKnife
 import butterknife.Unbinder
 import cn.com.example.lb.shopmall.R
 import cn.com.example.lb.shopmall.base.BaseFragment
+import cn.com.example.lb.shopmall.shoppingcart.utils.CartStorage
 
 class ShoppingCartFragment:BaseFragment() {
     private var homeView:View? = null
@@ -18,7 +19,7 @@ class ShoppingCartFragment:BaseFragment() {
     }
 
     override fun initData() {
-
+       println("========"+CartStorage.getAllData())
     }
 
     override fun onDestroyView() {
