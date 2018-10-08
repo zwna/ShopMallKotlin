@@ -44,8 +44,8 @@ class MainActivity : FragmentActivity() {
             override fun getItem(position: Int) = when(position){
                     0 -> homeFragment
                     1 -> communityFragment
-                    2 -> shoppingCartFragment
-                    3 -> typeFragment
+                    2 -> typeFragment
+                    3 -> shoppingCartFragment
                     4 -> userFragment
                     else -> null
                 }

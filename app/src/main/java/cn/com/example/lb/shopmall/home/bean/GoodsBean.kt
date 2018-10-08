@@ -8,9 +8,10 @@ data class GoodsBean(val cover_price: String,
                  val product_id: String):Serializable {
 
     var number:Int = 1
+    var isSelected:Boolean = true
 
     override fun toString(): String {
-        return "GoodsBean(cover_price='$cover_price', figure='$figure', name='$name', product_id='$product_id', number=$number)"
+        return "GoodsBean(cover_price='$cover_price', figure='$figure', name='$name', product_id='$product_id', number=$number, isSelected=$isSelected)"
     }
 
 
