@@ -21,6 +21,9 @@ class ShoppingCartFragment:BaseFragment(),View.OnClickListener {
             R.id.btn_delete -> {
                 adapter.deleteData()
                 adapter.checkAll()
+                if(adapter.itemCount == 0){
+                    emptyShoppingCart()
+                }
             }
         }
     }
@@ -83,17 +86,30 @@ class ShoppingCartFragment:BaseFragment(),View.OnClickListener {
         initListener()
     }
 
+    override fun onResume() {
+        super.onResume()
+        showData()
+    }
+
     private fun showData(){
         goodsBeanList = CartStorage.getAllData() as ArrayList<GoodsBean>
         val cartStorageModule = CartStorageModule(activity!!,goodsBeanList as ArrayList<GoodsBean>,checkbox_all,tv_shopcart_total,cb_all)
         DaggerCartStorageComponent.builder().cartStorageModule(cartStorageModule).baseApplicationComponent((activity?.application as ShopMallApplication).baseApplicationComponent).build().inject(this@ShoppingCartFragment)
-        if(goodsBeanList != null && goodsBeanList!!.size > 0){
+        if(goodsBeanList?.isNotEmpty()!!){
+            tv_shopcart_edit.visibility = View.VISIBLE
+            ll_check_all.visibility = View.VISIBLE
             ll_empty_shopcart.visibility = View.GONE
             recyclerview.adapter = adapter
             recyclerview.layoutManager = linearLayoutManager
         }else{
-            ll_empty_shopcart.visibility = View.VISIBLE
+            emptyShoppingCart()
         }
+    }
+
+    private fun emptyShoppingCart(){
+        ll_empty_shopcart.visibility = View.VISIBLE
+        tv_shopcart_edit.visibility = View.GONE
+        ll_delete.visibility = View.GONE
     }
 
 }
